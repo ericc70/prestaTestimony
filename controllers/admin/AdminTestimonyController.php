@@ -15,6 +15,8 @@ class AdminTestimonyController extends ModuleAdminController
         $this->bootstrap = true;
         parent::__construct();
 
+        $this->addRowAction('edit');
+        $this->addRowAction('delete');
         $this->fields_list = [
             'id_testimony' => [
                 'title' => $this->l('ID'),
@@ -37,19 +39,20 @@ class AdminTestimonyController extends ModuleAdminController
             //     'align' => 'center'
             // ],
 
-            'new_window' => [
-                'title' => $this->trans('New window', [], 'Admin.Navigation.Header'),
-                'align' => 'center',
-                'type' => 'bool',
-                'active' => 'new_window',
-                'class' => 'fixed-width-sm',
-            ],
+         
         ];
     }
 
     public function renderForm(){
 
-        if(!$testimony = $this->loadObject((true))) return false;
+  
+        $this->bulk_actions = [
+            'delete' => [
+                'text' => $this->trans('Delete selected', [], 'Admin.Notifications.Info'),
+                'confirm' => $this->trans('Delete selected items?', [], 'Admin.Notifications.Info'),
+                'icon' => 'icon-trash',
+            ],
+        ];
 
         $this->fields_form =array(
             'tinymce' => true,
@@ -98,12 +101,18 @@ class AdminTestimonyController extends ModuleAdminController
                     ],
                 
                 ),
-                array(
-                    'submit' => [
-                        'title' => $this->l('Save'),
-                    ],
-                )
+                // array(
+                //     'submit' => [
+                //         'title' => $this->l('Save'),
+                //     ],
+                // )
             )
             );
+            $this->fields_form['submit'] = [
+                'title' => $this->trans('Save', [], 'Admin.Actions'),
+            ];
+            if(!$testimony = $this->loadObject((true))) return false;
+            // $this->getFieldsValues($obj);
+            return parent::renderForm();
     }
 }
