@@ -86,9 +86,7 @@ class Testimony extends Module
 
     public function installTab()
     {
-
         $languages = Language::getLanguages();
-   
         foreach ($this->tabs as $t) {
            $tab = new Tab();
             // $tab->active = 1;
