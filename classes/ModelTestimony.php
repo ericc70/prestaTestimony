@@ -18,4 +18,5 @@ class ModelTestimony extends ObjectModel{
         ),
     );
 
+    public static $img_dir = _PS_IMG_DIR_.'testimony';
 }

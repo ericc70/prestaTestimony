@@ -11,17 +11,37 @@ class AdminTestimonyController extends ModuleAdminController
     {
         $this->table = 'testimony';
         $this->className = 'ModelTestimony';
-        $this->lang = false;
+        $this->lang = true;
         $this->bootstrap = true;
         parent::__construct();
 
         $this->addRowAction('edit');
         $this->addRowAction('delete');
+    $this->bulk_actions = [
+            'delete' => [
+                'text' => $this->trans('Delete selected', [], 'Admin.Notifications.Info'),
+                'confirm' => $this->trans('Delete selected items?', [], 'Admin.Notifications.Info'),
+                'icon' => 'icon-trash',
+            ],
+        ];
+
+        
+        $this->fieldImageSettings = array(
+            'name' => 'logo',
+            'dir' => 'testimony'
+        );
         $this->fields_list = [
             'id_testimony' => [
                 'title' => $this->l('ID'),
                 'align' => 'center',
                 'class' => 'fixed-width-xs',
+            ],
+                'logo'=>[
+                'title' => $this->l('Logo'),
+                'image' => 'testimony',
+                'orderby' => false,
+                'search' => false,
+                'align' => 'center'
             ],
             'name' => [
                 'title' => $this->l('Name'),
@@ -31,33 +51,42 @@ class AdminTestimonyController extends ModuleAdminController
                 'title' => $this->l('Description'),
                 'width' => 'auto'
             ],
-            // 'logo'=>[
-            //     'titile' => $this->l('Logo'),
-            //     'image' => 'm',
-            //     'orderby' => false,
-            //     'search' => false,
-            //     'align' => 'center'
-            // ],
+            'active' => [
+                'title' => $this->l('Status'),
+                'align' => 'center',
+                'active' => 'active',
+                'type' => 'bool',
+                'class' => 'fixed-width-sm',
+                'orderby' => false,
+            ],
+        
 
          
         ];
-    }
 
+    }
+  
     public function renderForm(){
 
-  
-        $this->bulk_actions = [
-            'delete' => [
-                'text' => $this->trans('Delete selected', [], 'Admin.Notifications.Info'),
-                'confirm' => $this->trans('Delete selected items?', [], 'Admin.Notifications.Info'),
-                'icon' => 'icon-trash',
-            ],
-        ];
+        if(!$testimony = $this->loadObject((true))) 
+        {
+            return;
+        }
+    $image = ModelTestimony::$img_dir.'/'.$testimony->id.'.jpg';
+    $image_url = ImageManager::thumbnail(
+        $image,
+        $this->table . '_' . (int) $testimony->id . '.' . $this->imageType,
+        350,
+        $this->imageType,
+        true,
+        true
+    );
+    $image_size = file_exists($image) ? filesize($image) / 1000 : false;
 
         $this->fields_form =array(
             'tinymce' => true,
             'legend' => array(
-                'tittle' => $this->l('Testimony'),
+                 'tittle' => $this->l('Testimony'),
                 'icon' => 'icon-certifcate'
             ),
             'input' => array (
@@ -68,6 +97,16 @@ class AdminTestimonyController extends ModuleAdminController
                     'col' => 4,
                     'required' => true,
                     'hint' => $this->l('Invalid characters :') 
+                ),
+                array(
+                    'type' => 'file',
+                    'label' => $this->l('Logo'),
+                    'name' => 'logo',
+                    'image' => $image_url ? $image_url : false,
+                    'size' => $image_size,
+                    'display_image' => true,
+                    'col' => 6,
+                    'hint' => $this->l('Upload image from your computer')
                 ),
                 array(
                     'type' => 'textarea',
@@ -109,10 +148,17 @@ class AdminTestimonyController extends ModuleAdminController
             )
             );
             $this->fields_form['submit'] = [
-                'title' => $this->trans('Save', [], 'Admin.Actions'),
+              // 'title' => $this->trans('Save', [], 'Admin.Actions'),
+               'title' => $this->l('Save'),
+              'class' => 'btn btn-default pull-right',
             ];
-            if(!$testimony = $this->loadObject((true))) return false;
-            // $this->getFieldsValues($obj);
+            if(!$testimony = $this->loadObject((true))) 
+                {
+                    return;
+                }
+             $this->getFieldsValue($testimony);
             return parent::renderForm();
     }
+
+    
 }

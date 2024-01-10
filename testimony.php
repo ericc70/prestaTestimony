@@ -52,7 +52,7 @@ class Testimony extends Module
             array('name' => 'Testimony', 'class_name' => 'AdminTestimony', 'parent' => 'ParentTestimony')
         );
 
- 
+        // $this->installTab() ;
         $this->displayName = $this->l('testimony');
         $this->description = $this->l('module de temoignage');
 
@@ -69,6 +69,7 @@ class Testimony extends Module
         require _PS_MODULE_DIR_ . 'testimony/sql/install.php';
 
         return parent::install() &&
+            // $this->installFolder() &&
             $this->installTab() &&
             $this->registerHook('header') &&
             $this->registerHook('displayBackOfficeHeader') &&
@@ -88,7 +89,7 @@ class Testimony extends Module
     {
         $languages = Language::getLanguages();
         foreach ($this->tabs as $t) {
-           $tab = new Tab();
+            $tab = new Tab();
             // $tab->active = 1;
             $tab->module = $this->name;
             $tab->class_name = $t['class_name'];
@@ -97,7 +98,7 @@ class Testimony extends Module
             foreach ($languages as $language) {
                 $tab->name[$language['id_lang']] = $t['name'];
             }
-             $tab->save();
+            $tab->save();
         }
 
         return true;
@@ -107,17 +108,23 @@ class Testimony extends Module
     public function uninstallTab()
     {
         foreach ($this->tabs as $t) {
-         $id_tab = (int)Tab::getIdFromClassName($t['class_name']);
-            if($id_tab){
+            $id_tab = (int)Tab::getIdFromClassName($t['class_name']);
+            if ($id_tab) {
                 $tab = new Tab($id_tab);
                 $tab->delete();
             }
-       
         }
-        
+
         return true;
     }
 
+    public function installFolder()
+    {
+        if (!file_exists(ModelTestimony::$img_dir)) {
+            return mkdir(ModelTestimony::$img_dir, 0777);
+        }
+        return true;
+    }
     /**
      * Load the configuration form
      */
@@ -210,9 +217,9 @@ class Testimony extends Module
                         'label' => $this->l('Password'),
                     ),
                 ),
-                'submit' => array(
-                    'title' => $this->l('Save'),
-                ),
+                // 'submit' => array(
+                //     'title' => $this->l('Save'),
+                // ),
             ),
         );
     }
