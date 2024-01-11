@@ -3,6 +3,7 @@
 
 if (!class_exists('ModelTestimony'));
 require_once _PS_MODULE_DIR_ . 'testimony/classes/ModelTestimony.php';
+
 class AdminTestimonyController extends ModuleAdminController
 {
 

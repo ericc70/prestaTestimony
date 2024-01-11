@@ -1,5 +1,7 @@
 <?php
 
+
+
 /**
  * 2007-2024 PrestaShop
  *
@@ -28,6 +30,9 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
+
+if (!class_exists('ModelTestimony'));
+require_once _PS_MODULE_DIR_ . 'testimony/classes/ModelTestimony.php';
 
 class Testimony extends Module
 {
@@ -270,6 +275,13 @@ class Testimony extends Module
 
     public function hookDisplayHome()
     {
-        /* Place your code here. */
+         $testimonies = ModelTestimony::getTestimonies();
+         
+         $this->context->smarty->assign(array(
+            'testimonies' =>  $testimonies,
+            'testimony_path' => ModelTestimony::getImgPath(true)
+         ));
+
+       return $this->display(__FILE__,'testimony_home.tpl');
     }
 }
