@@ -5,16 +5,25 @@ class TestimonyTestimoniesModuleFrontController extends ModuleFrontController
 
     public function initContent(){
         parent::initContent();
-        $testimonies = ModelTestimony::getTestimonies(null, null);
-
+    
+        $page = Tools::getValue('p', 1); // Récupère le numéro de page à partir de l'URL, par défaut à 1
+        $itemsPerPage = 3; // Définissez le nombre d'éléments que vous voulez par page
+    
+        $totalItems = ModelTestimony::getTotalTestimonies(true); // Assurez-vous que votre modèle a une méthode getTotalTestimonies
+        $totalPages = ceil($totalItems / $itemsPerPage);
+    
+        $testimonies = ModelTestimony::getTestimonies(($page - 1) * $itemsPerPage);
+        // $testimonies = ModelTestimony::getTestimonies(($page - 1) * $itemsPerPage, $itemsPerPage);
+    
         $this->context->smarty->assign(array(
             'testimonies' =>  $testimonies,
-            'testimony_path' => ModelTestimony::getImgPath(true)
-         ));
-
-      return $this->setTemplate('module:testimony/views/templates/front/testimony.tpl');
+            'testimony_path' => ModelTestimony::getImgPath(true),
+            'current_page' => $page,
+            'total_pages' => $totalPages,
+        ));
     
-    // return $this->display('module/testimony/views/templates/front/testimony.tpl');
+        return $this->setTemplate('module:testimony/views/templates/front/testimony.tpl');
     }
+    
 }
 

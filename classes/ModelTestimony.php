@@ -38,5 +38,19 @@ class ModelTestimony extends ObjectModel{
           return Db::getInstance()->executeS($q);
     }
 
+    public static function getTotalTestimonies( $active = null)
+    {
+       // $id_lang = $id_lang ? $id_lang : Context::getContext()->language->id;
+       $q = new DbQuery();
+       $q->select('COUNT(*)')
+         ->from('testimony', 't')
+         ->innerJoin('testimony_lang', 't1', 't1.id_testimony=t.id_testimony');
+   
+       if ($active !== null) {
+           $q->where('t.active=' . (int)$active);
+       }
+   
+       return Db::getInstance()->getValue($q);
+    }
 
 }

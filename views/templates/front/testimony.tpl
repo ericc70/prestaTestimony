@@ -17,6 +17,12 @@
             </div>
        {/foreach}
   
-  
+       <div class="pagination">
+       {foreach from=range(1, $total_pages) item=page}
+           <a href="?p={$page}" class="{if $page == $current_page}active{/if}">{$page}</a>
+       {/foreach}
+   </div>
+   
+   
 </section>
     {/block}
