@@ -1,10 +1,12 @@
+{extends file='page.tpl'}
 
+{block name="page_title"}
+     <span>Témoingnages</span>
+{/block}
 
-
+{block name="page_content_container"}
 <section>
-    <h1>Témoingnages</h1>
-   
-
+      
         {foreach from=$testimonies item=testimony}
             <div class="col-md-4 ">
                 <div class="testimonies">
@@ -15,5 +17,6 @@
             </div>
        {/foreach}
   
-       <a href="{$link->getModuleLink('testimony' , 'testimonies') }" class="btn btn-default"> Voir</a>
+  
 </section>
+    {/block}

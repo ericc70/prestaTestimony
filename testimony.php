@@ -275,6 +275,7 @@ class Testimony extends Module
 
     public function hookDisplayHome()
     {
+        echo "toto";
          $testimonies = ModelTestimony::getTestimonies();
          
          $this->context->smarty->assign(array(
